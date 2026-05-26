@@ -430,14 +430,14 @@ async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"📚 *현재 수록 대학*: {len(_DB.대학_목록())}개교\n"
         f"📅 *데이터 기준*: {_DB.갱신일시[:10]}\n\n"
         "━━━━━━━━━━━━━━━━━━━\n"
-        "🔍 */대학목록* — 전체 대학 목록\n"
-        "🏫 */검색 [대학명]* — 대학 정보 조회\n"
-        "📋 */전형 [대학명]* — 수시 전형 목록\n"
-        "⭐ */관심추가 [대학명]* — 관심 대학 등록\n"
-        "👤 */내프로필* — 내 프로필 조회\n"
+        "🔍 */list* — 전체 대학 목록\n"
+        "🏫 */search [대학명]* — 대학 정보 조회\n"
+        "📋 */detail [대학명]* — 수시 전형 목록\n"
+        "⭐ */add [대학명]* — 관심 대학 등록\n"
+        "👤 */profile* — 내 프로필 조회\n"
         "❓ *자유 질문* — AI에게 무엇이든 물어보세요\n"
         "━━━━━━━━━━━━━━━━━━━\n"
-        "예) `연세대 수능최저 알려줘`"
+        "예) `연세대 수능최저 알려줘`  또는  `대학목록`"
     )
     await update.message.reply_text(text, parse_mode=ParseMode.MARKDOWN)
 
@@ -474,7 +474,7 @@ async def cmd_검색(update: Update, context: ContextTypes.DEFAULT_TYPE):
     키워드 = " ".join(context.args).strip() if context.args else ""
     if not 키워드:
         await update.message.reply_text(
-            "사용법: `/검색 대학명`\n예) `/검색 연세대`",
+            "사용법: `/search 대학명`\n예) `/search 연세대`",
             parse_mode=ParseMode.MARKDOWN,
         )
         return
@@ -501,7 +501,7 @@ async def cmd_전형(update: Update, context: ContextTypes.DEFAULT_TYPE):
     대학명_입력 = " ".join(context.args).strip() if context.args else ""
     if not 대학명_입력:
         await update.message.reply_text(
-            "사용법: `/전형 대학명`\n예) `/전형 서울대학교`",
+            "사용법: `/detail 대학명`\n예) `/detail 서울대학교`",
             parse_mode=ParseMode.MARKDOWN,
         )
         return
@@ -549,7 +549,7 @@ async def cmd_관심추가(update: Update, context: ContextTypes.DEFAULT_TYPE):
     _프로필.접속_기록(user)
     대학명 = " ".join(context.args).strip() if context.args else ""
     if not 대학명:
-        await update.message.reply_text("사용법: `/관심추가 대학명`", parse_mode=ParseMode.MARKDOWN)
+        await update.message.reply_text("사용법: `/add 대학명`", parse_mode=ParseMode.MARKDOWN)
         return
 
     결과 = _DB.대학_검색(대학명)
@@ -596,11 +596,14 @@ async def cmd_도움말(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """도움말 출력."""
     await update.message.reply_text(
         "📖 *도움말*\n\n"
-        "*/대학목록* — 수록된 전체 대학 목록\n"
-        "*/검색 [키워드]* — 대학명 키워드 검색\n"
-        "*/전형 [대학명]* — 수시 전형 목록 조회\n"
-        "*/관심추가 [대학명]* — 관심 대학 등록\n"
-        "*/내프로필* — 내 프로필 및 관심 대학\n\n"
+        "*/list* — 수록된 전체 대학 목록\n"
+        "*/search [키워드]* — 대학명 키워드 검색\n"
+        "*/detail [대학명]* — 수시 전형 목록 조회\n"
+        "*/add [대학명]* — 관심 대학 등록\n"
+        "*/profile* — 내 프로필 및 관심 대학\n\n"
+        "💬 *한국어 단축어*\n"
+        "  `대학목록` `내프로필` `도움말`\n"
+        "  `검색 연세대` `전형 서울대학교`\n\n"
         "💬 *자유 질문 예시*\n"
         "  `서강대 논술전형 수능최저 알려줘`\n"
         "  `고려대 학생부종합 반영비율은?`\n"
@@ -724,6 +727,39 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     질문 = update.message.text.strip()
     logger.info(f"[질문] {user.full_name}: {질문[:80]}")
 
+    # ── 한국어 키워드 → 커맨드 함수 라우팅 ──────────────────────
+    # 사용자가 /list 대신 "대학목록"처럼 입력해도 동작하도록 합니다.
+    _한국어_단축어: dict[str, object] = {
+        "도움말": cmd_도움말,
+        "대학목록": cmd_대학목록,
+        "내프로필": cmd_내프로필,
+    }
+    if 질문 in _한국어_단축어:
+        await _한국어_단축어[질문](update, context)  # type: ignore[operator]
+        return
+
+    # "검색 연세대" / "검색:연세대" 패턴
+    _검색_매치 = re.match(r"^검색[:\s]+(.+)$", 질문)
+    if _검색_매치:
+        context.args = _검색_매치.group(1).split()  # type: ignore[assignment]
+        await cmd_검색(update, context)
+        return
+
+    # "전형 서울대학교" / "전형:고려대" 패턴
+    _전형_매치 = re.match(r"^전형[:\s]+(.+)$", 질문)
+    if _전형_매치:
+        context.args = _전형_매치.group(1).split()  # type: ignore[assignment]
+        await cmd_전형(update, context)
+        return
+
+    # "관심추가 한양대" / "관심 추가 한양대" 패턴
+    _관심_매치 = re.match(r"^관심\s*추가[:\s]+(.+)$", 질문)
+    if _관심_매치:
+        context.args = _관심_매치.group(1).split()  # type: ignore[assignment]
+        await cmd_관심추가(update, context)
+        return
+    # ─────────────────────────────────────────────────────────────
+
     # 대학명 자동 감지
     감지된_대학 = None
     for 대학 in _DB.대학_목록():
@@ -745,7 +781,7 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             await update.message.reply_text(
                 "AI 응답 기능이 비활성화되어 있습니다.\n"
-                "*/검색 대학명* 또는 */대학목록* 명령어를 이용해주세요.",
+                "*/search 대학명* 또는 */list* 명령어를 이용해주세요.",
                 parse_mode=ParseMode.MARKDOWN,
             )
         return
@@ -781,14 +817,13 @@ def main():
     app = Application.builder().token(TELEGRAM_TOKEN).build()
 
     # 커맨드 핸들러 등록
-    app.add_handler(CommandHandler("start",    cmd_start))
-    app.add_handler(CommandHandler("help",     cmd_도움말))
-    app.add_handler(CommandHandler("도움말",   cmd_도움말))
-    app.add_handler(CommandHandler("대학목록", cmd_대학목록))
-    app.add_handler(CommandHandler("검색",     cmd_검색))
-    app.add_handler(CommandHandler("전형",     cmd_전형))
-    app.add_handler(CommandHandler("관심추가", cmd_관심추가))
-    app.add_handler(CommandHandler("내프로필", cmd_내프로필))
+    app.add_handler(CommandHandler("start",   cmd_start))
+    app.add_handler(CommandHandler("help",    cmd_도움말))
+    app.add_handler(CommandHandler("list",    cmd_대학목록))
+    app.add_handler(CommandHandler("search",  cmd_검색))
+    app.add_handler(CommandHandler("detail",  cmd_전형))
+    app.add_handler(CommandHandler("add",     cmd_관심추가))
+    app.add_handler(CommandHandler("profile", cmd_내프로필))
 
     # 인라인 버튼 콜백
     app.add_handler(CallbackQueryHandler(callback_handler))

@@ -582,20 +582,38 @@ def main():
         logging.error("  먼저 scripts/pdf_collector.py 를 실행하여 PDF를 수집하세요.")
         return 1
 
-    logging.info(f"[파서] 파싱 대상 PDF: {len(PDF_목록)}개")
+    # 기존 파싱 결과 로드 (증분 파싱: 이미 성공한 파일 스킵)
+    기존_결과_맵: dict[str, dict] = {}
+    if 출력_경로.exists():
+        try:
+            with open(출력_경로, encoding="utf-8") as f:
+                기존_json = json.load(f)
+            for 항목 in 기존_json.get("대학_목록", []):
+                소스 = 항목.get("_소스_파일", "")
+                # 이전에 성공한 파일만 재사용 (실패한 것은 재시도)
+                if 소스 and not 항목.get("파싱_실패"):
+                    기존_결과_맵[소스] = 항목
+            logging.info(f"[증분] 기존 파싱 결과 {len(기존_결과_맵)}개 로드 (재파싱 스킵 대상)")
+        except Exception as e:
+            logging.warning(f"[증분] 기존 결과 로드 실패: {e} → 전체 재파싱")
+
+    신규_PDF_목록 = [p for p in PDF_목록 if p.name not in 기존_결과_맵]
+    스킵_수 = len(PDF_목록) - len(신규_PDF_목록)
+    logging.info(f"[파서] 전체 PDF: {len(PDF_목록)}개  |  스킵(기존성공): {스킵_수}개  |  신규파싱: {len(신규_PDF_목록)}개")
     for p in PDF_목록:
-        logging.info(f"  - {p.name} ({p.stat().st_size/1024/1024:.1f} MB)")
+        태그 = "  [스킵]" if p.name in 기존_결과_맵 else "  [신규]"
+        logging.info(f"{태그} {p.name} ({p.stat().st_size/1024/1024:.1f} MB)")
 
     # 5. Gemini 파서 초기화
     파서 = GeminiParser(api_key=api_key)
 
-    # 6. 각 PDF 파싱
-    파싱_결과_목록: list[dict] = []
-    성공_수 = 0
+    # 6. 각 PDF 파싱 (기존 성공 결과를 먼저 채우고 신규만 파싱)
+    파싱_결과_목록: list[dict] = [기존_결과_맵[p.name] for p in PDF_목록 if p.name in 기존_결과_맵]
+    성공_수 = len(파싱_결과_목록)
 
-    for i, pdf_path in enumerate(PDF_목록, 1):
+    for i, pdf_path in enumerate(신규_PDF_목록, 1):
         logging.info("")
-        logging.info(f"[{i}/{len(PDF_목록)}] 파싱 중: {pdf_path.name}")
+        logging.info(f"[신규 {i}/{len(신규_PDF_목록)}] 파싱 중: {pdf_path.name}")
         logging.info("-" * 50)
 
         try:
@@ -622,7 +640,8 @@ def main():
                 "_파싱_시각": datetime.now().isoformat(timespec="seconds"),
             })
 
-    # 7. 최종 JSON 저장
+    # 7. 최종 JSON 저장 (기존 성공 결과 + 신규 파싱 결과 정렬 병합)
+    파싱_결과_목록.sort(key=lambda x: x.get("_소스_파일", ""))
     최종_결과 = {
         "생성_일시": datetime.now().isoformat(timespec="seconds"),
         "총_PDF_수": len(PDF_목록),

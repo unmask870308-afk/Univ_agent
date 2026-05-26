@@ -655,11 +655,29 @@ class 직접URL_수집기:
     (URL은 시즌마다 변경될 수 있으므로 정기적으로 갱신 필요)
     """
 
-    # 공개 접근 가능한 직접 PDF URL (예시 목록 - 실제 URL은 매년 변경됨)
-    # adiga.kr의 각 대학 페이지나 공식 입학처에서 업데이트 필요
+    # 공개 접근 가능한 직접 PDF URL
+    # HTTP 200 + application/pdf 응답 확인된 URL 목록 (매년 갱신 필요)
     KNOWN_PDFS: list[dict] = [
-        # adiga.kr에 등록된 대학별 모집요강 첨부파일 패턴 예시
-        # 실제 운영 시 아래 URL을 현재 연도 모집요강으로 교체
+        {
+            "title": "서울대학교_2026학년도_수시모집요강",
+            "url": "https://admission.snu.ac.kr/webdata/admission/files/2026susi.pdf",
+            "출처": "https://admission.snu.ac.kr/undergraduate/early/guide",
+        },
+        {
+            "title": "연세대학교_2026학년도_수시_모집요강",
+            "url": "https://admission.yonsei.ac.kr/seoul/upload/guide/20251229103015L4LFJB.PDF",
+            "출처": "https://admission.yonsei.ac.kr/seoul/admission/html/rolling/guide.asp",
+        },
+        {
+            "title": "연세대학교_2026학년도_학생부종합전형_안내서",
+            "url": "https://www2.yonsei.ac.kr/entrance/2025/2026학년도_연세대학교_학생부종합전형안내서.pdf",
+            "출처": "https://admission.yonsei.ac.kr/seoul/admission/html/rolling/guide.asp",
+        },
+        {
+            "title": "연세대학교_2028학년도_입학전형_시행계획",
+            "url": "https://www2.yonsei.ac.kr/entrance/plan/2028_plan.pdf",
+            "출처": "https://admission.yonsei.ac.kr/seoul/admission/html/rolling/guide.asp",
+        },
     ]
 
     def __init__(self, save_dir: Path):
@@ -675,15 +693,17 @@ class 직접URL_수집기:
         for 항목 in self.KNOWN_PDFS:
             url = 항목.get("url", "")
             제목 = 항목.get("title", "모집요강")
+            출처 = 항목.get("출처", "")
             안전제목 = 안전_파일명(제목)
             파일명 = f"{안전제목}_{url_해시(url)}.pdf"
             경로 = self.save_dir / 파일명
 
             if 중복_확인(self.save_dir, url):
-                logging.info(f"[직접URL] 중복: {제목}")
+                logging.info(f"[직접URL] 중복 건너뜀: {제목}")
                 continue
 
-            if requests_PDF_다운로드(url, 경로):
+            logging.info(f"[직접URL] 다운로드: {제목}")
+            if requests_PDF_다운로드(url, 경로, 출처):
                 self.downloaded.append(경로)
 
         return self.downloaded
@@ -711,15 +731,18 @@ def main():
 
     결과: list[Path] = []
 
-    # 2. 직접 URL 수집기 (알려진 URL이 있는 경우)
+    # 2. 직접 URL 수집기 - 서울대·연세대 등 확인된 PDF URL 즉시 다운로드
     직접_수집기 = 직접URL_수집기(저장경로)
     결과 += 직접_수집기.실행()
 
-    # 3. Playwright 기반 동적 수집기
-    if len(결과) < 3:
+    # 3. 직접 URL로 목표(4개) 미달 시 Playwright로 추가 수집
+    목표_수량 = len(직접URL_수집기.KNOWN_PDFS)
+    if len(결과) < 목표_수량:
+        남은_수 = 목표_수량 - len(결과)
+        logging.info(f"[메인] 직접 URL 미달({len(결과)}/{목표_수량}) → Playwright로 {남은_수}개 추가 수집")
         수집기 = 모집요강_수집기(
             save_dir=저장경로,
-            max_pdf=max(3, 3 - len(결과)),
+            max_pdf=남은_수,
             headless=False,
         )
         결과 += 수집기.실행()

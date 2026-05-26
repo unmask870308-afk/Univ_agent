@@ -1,0 +1,87 @@
+2026-05-26 20:55:23 [INFO] [로그] 로그 파일 생성: /Users/jwlee/UnivAgent/data/logs/collector_20260526_205523.log
+2026-05-26 20:55:23 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-05-26 20:55:23 [INFO]   대학 입시 모집요강 PDF 자동 수집기
+2026-05-26 20:55:23 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-05-26 20:55:23 [INFO] [초기화] 의존성 확인 중...
+2026-05-26 20:55:23 [INFO] [의존성] playwright 이미 설치됨
+2026-05-26 20:55:24 [INFO] [의존성] beautifulsoup4 이미 설치됨
+2026-05-26 20:55:24 [INFO] [의존성] requests 이미 설치됨
+2026-05-26 20:55:24 [INFO] [playwright] chromium 브라우저 이미 설치됨
+2026-05-26 20:55:24 [INFO] [초기화] PDF 저장 경로: /Users/jwlee/UnivAgent/data/raw_pdf
+2026-05-26 20:55:24 [INFO] ============================================================
+2026-05-26 20:55:24 [INFO] [수집기] Playwright 브라우저를 시작합니다 (headless=False)
+2026-05-26 20:55:24 [INFO] [수집기] 저장 경로: /Users/jwlee/UnivAgent/data/raw_pdf
+2026-05-26 20:55:24 [INFO] [수집기] 최대 다운로드 수: 5
+2026-05-26 20:55:24 [INFO] ============================================================
+2026-05-26 20:55:27 [INFO] [전략1] adiga.kr 접속 중: https://www.adiga.kr
+2026-05-26 20:55:29 [INFO] [전략1] 페이지 제목: 대입정보포털
+2026-05-26 20:55:29 [INFO] [전략1] 모집요강 관련 링크 탐색 중...
+2026-05-26 20:55:29 [INFO] [링크추출] 총 4개 PDF 관련 링크 발견
+2026-05-26 20:55:29 [INFO] [전략1] 메인 페이지에서 PDF 4개 발견
+2026-05-26 20:55:29 [INFO] [다운로드] 시작: 대학정보
+
+대학 교육여건, 설치학과 등의 기본 정보 및 모집요강, 대입특징, 대학 소식 등의 정보
+2026-05-26 20:55:29 [INFO] [다운로드] URL: https://www.adiga.kr/ucp/uvt/uni/univView.do?menuId=PCUVTINF2000
+2026-05-26 20:55:59 [INFO] [requests다운] 다운로드 시작: 대학정보
+
+대학 교육여건, 설치학과 등의 기본 정보 및 모집요강, 대입특징, 대학 소식 등의 정보
+2026-05-26 20:55:59 [WARNING] [requests다운] PDF가 아닌 응답 수신 (Content-Type: text/html;charset=UTF-8, 크기: 288764 bytes)
+2026-05-26 20:55:59 [INFO] [다운로드] 시작: Adobe Reader XI
+								Adobe사의 PDF 파일 뷰어 프로그램
+2026-05-26 20:55:59 [INFO] [다운로드] URL: https://www.adobe.com/kr/acrobat/pdf-reader.html
+2026-05-26 20:56:29 [INFO] [requests다운] 다운로드 시작: Adobe Reader XI
+								Adobe사의 PDF 파일 뷰어 프로그램
+2026-05-26 20:56:59 [ERROR] [requests다운] 다운로드 실패: https://www.adobe.com/kr/acrobat/pdf-reader.html → HTTPSConnectionPool(host='www.adobe.com', port=443): Read timed out. (read timeout=30)
+2026-05-26 20:56:59 [INFO] [다운로드] 시작: Hancom 한글 Viewer
+								한컴오피스 한글 뷰어 프로그램
+2026-05-26 20:56:59 [INFO] [다운로드] URL: https://www.hancom.com/cs_center/csDownload.do
+2026-05-26 20:56:59 [INFO] [requests다운] 다운로드 시작: Hancom 한글 Viewer
+								한컴오피스 한글 뷰어 프로그램
+2026-05-26 20:57:00 [WARNING] [requests다운] PDF가 아닌 응답 수신 (Content-Type: text/html; charset=utf-8, 크기: 211532 bytes)
+2026-05-26 20:57:00 [WARNING] [수집기] 전략1 실패 → 전략2(개별 대학) 시도
+2026-05-26 20:57:00 [INFO] [전략2] 서울대학교 입학처 접속: https://admission.snu.ac.kr/undergraduate/foreigner/general
+2026-05-26 20:57:03 [INFO] [전략2] 페이지 로드 완료: 404 Not found
+2026-05-26 20:57:03 [INFO] [링크추출] 총 0개 PDF 관련 링크 발견
+2026-05-26 20:57:03 [INFO] [전략2] 서울대학교에서 직접 PDF 링크 없음, 목록 페이지 탐색...
+2026-05-26 20:57:03 [INFO] [전략2] 연세대학교 입학처 접속: https://admission.yonsei.ac.kr/seoul/admission/html/admission/admission01_01.asp
+2026-05-26 20:57:06 [INFO] [전략2] 페이지 로드 완료: IIS 10.0 자세한 오류 - 404.0 - Not Found
+2026-05-26 20:57:06 [INFO] [링크추출] 총 0개 PDF 관련 링크 발견
+2026-05-26 20:57:06 [INFO] [전략2] 연세대학교에서 직접 PDF 링크 없음, 목록 페이지 탐색...
+2026-05-26 20:57:06 [INFO] [전략2] 고려대학교 입학처 접속: https://oku.korea.ac.kr/oku/index.do
+2026-05-26 20:57:09 [INFO] [전략2] 페이지 로드 완료: 입학처 메인
+2026-05-26 20:57:09 [INFO] [링크추출] 총 9개 PDF 관련 링크 발견
+2026-05-26 20:57:09 [INFO] [전략2] 고려대학교에서 PDF 9개 발견
+2026-05-26 20:57:09 [INFO] [다운로드] 시작: 모집요강
+2026-05-26 20:57:09 [INFO] [다운로드] URL: https://oku.korea.ac.kr/oku/cms/FR_CON/index.do?MENU_ID=680
+2026-05-26 20:57:39 [INFO] [requests다운] 다운로드 시작: 모집요강
+2026-05-26 20:57:39 [WARNING] [requests다운] PDF가 아닌 응답 수신 (Content-Type: text/html;charset=utf-8, 크기: 57556 bytes)
+2026-05-26 20:57:39 [INFO] [다운로드] 시작: 모집요강
+2026-05-26 20:57:39 [INFO] [다운로드] URL: https://oku.korea.ac.kr/oku/cms/FR_CON/index.do?MENU_ID=650
+2026-05-26 20:58:09 [INFO] [requests다운] 다운로드 시작: 모집요강
+2026-05-26 20:58:09 [WARNING] [requests다운] PDF가 아닌 응답 수신 (Content-Type: text/html;charset=utf-8, 크기: 57562 bytes)
+2026-05-26 20:58:09 [INFO] [전략2] 성균관대학교 입학처 접속: https://admission.skku.edu/admission/index.do
+2026-05-26 20:58:09 [WARNING] [전략2] 성균관대학교 처리 중 오류: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://admission.skku.edu/admission/index.do
+Call log:
+  - navigating to "https://admission.skku.edu/admission/index.do", waiting until "domcontentloaded"
+
+2026-05-26 20:58:09 [INFO] [전략2] 한국대학교육협의회(adiga) 입학처 접속: https://www.adiga.kr/kkk/ba/baBoardList.do?menuId=MN01013
+2026-05-26 20:58:09 [WARNING] [전략2] 한국대학교육협의회(adiga) 처리 중 오류: Page.goto: Navigation to "https://www.adiga.kr/kkk/ba/baBoardList.do?menuId=MN01013" is interrupted by another navigation to "chrome-error://chromewebdata/"
+Call log:
+  - navigating to "https://www.adiga.kr/kkk/ba/baBoardList.do?menuId=MN01013", waiting until "domcontentloaded"
+
+2026-05-26 20:58:10 [INFO] [수집기] 브라우저 종료
+2026-05-26 20:58:10 [INFO] 
+2026-05-26 20:58:10 [INFO] ============================================================
+2026-05-26 20:58:10 [INFO] [결과] 총 0개 PDF 다운로드 완료
+2026-05-26 20:58:10 [INFO] [결과] 저장 위치: /Users/jwlee/UnivAgent/data/raw_pdf
+2026-05-26 20:58:10 [INFO] ============================================================
+2026-05-26 20:58:10 [WARNING] [메인] 1차 수집 실패 → 공고 목록 수집기로 재시도...
+2026-05-26 20:58:10 [INFO] [공고수집기] 시작
+2026-05-26 20:58:10 [INFO] [공고수집기] 공고 목록 접속: https://www.adiga.kr/kkk/ba/baBoardList.do?menuId=MN01013
+2026-05-26 20:58:12 [INFO] [공고수집기] 게시판 항목 0개 발견
+2026-05-26 20:58:12 [INFO] [공고수집기] 공고 목록 접속: https://www.adiga.kr/kkk/ba/baBoardList.do?menuId=MN02001
+2026-05-26 20:58:14 [INFO] [공고수집기] 게시판 항목 0개 발견
+2026-05-26 20:58:14 [INFO] [공고수집기] 공고 목록 접속: https://www.adiga.kr/kkk/ba/baBoardList.do?menuId=MN03001
+2026-05-26 20:58:16 [INFO] [공고수집기] 게시판 항목 0개 발견
+2026-05-26 20:58:17 [ERROR] [완료] PDF 수집 실패 - 수동으로 사이트를 확인해주세요.
+2026-05-26 20:58:17 [ERROR]   확인 URL: https://www.adiga.kr

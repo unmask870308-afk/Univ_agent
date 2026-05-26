@@ -1,0 +1,87 @@
+2026-05-26 21:02:41 [INFO] [로그] 로그 파일: /Users/jwlee/UnivAgent/data/logs/collector_20260526_210241.log
+2026-05-26 21:02:41 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-05-26 21:02:41 [INFO]   대학 입시 모집요강 PDF 자동 수집기 v2
+2026-05-26 21:02:41 [INFO] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-05-26 21:02:41 [INFO] [초기화] 의존성 확인 중...
+2026-05-26 21:02:41 [INFO] [의존성] playwright 이미 설치됨
+2026-05-26 21:02:41 [INFO] [의존성] beautifulsoup4 이미 설치됨
+2026-05-26 21:02:41 [INFO] [의존성] requests 이미 설치됨
+2026-05-26 21:02:41 [INFO] [playwright] chromium 이미 설치됨
+2026-05-26 21:02:41 [INFO] [초기화] PDF 저장 경로: /Users/jwlee/UnivAgent/data/raw_pdf
+2026-05-26 21:02:41 [INFO] [직접URL] 등록된 직접 URL 없음 - 건너뜀
+2026-05-26 21:02:41 [INFO] ==============================================================
+2026-05-26 21:02:41 [INFO]   모집요강 PDF 수집 시작
+2026-05-26 21:02:41 [INFO]   저장 경로 : /Users/jwlee/UnivAgent/data/raw_pdf
+2026-05-26 21:02:41 [INFO]   목표 수량 : 3개
+2026-05-26 21:02:41 [INFO]   브라우저  : headless=False
+2026-05-26 21:02:41 [INFO] ==============================================================
+2026-05-26 21:02:42 [INFO] [전략1] adiga.kr 대학별 모집요강 탐색
+2026-05-26 21:02:42 [INFO] [adiga] 메인 접속: https://www.adiga.kr
+2026-05-26 21:02:43 [INFO] [adiga] 페이지 제목: 대입정보포털
+2026-05-26 21:02:43 [INFO] [adiga] 대학 목록 탐색: https://www.adiga.kr/ucp/uvt/uni/univList.do?menuId=PCUVTINF2000
+2026-05-26 21:02:45 [INFO] [adiga] 대학 링크 0개 발견
+2026-05-26 21:02:45 [INFO] [adiga] 방법B: 알려진 대학 코드로 직접 접근
+2026-05-26 21:02:45 [INFO] [adiga대학] 가톨릭대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0001&menuId=PCUVTINF2000
+2026-05-26 21:02:47 [INFO] [adiga대학] 가톨릭대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:02:47 [INFO] [adiga대학] 강원대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0002&menuId=PCUVTINF2000
+2026-05-26 21:02:49 [INFO] [adiga대학] 강원대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:02:49 [INFO] [adiga대학] 고려대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0039&menuId=PCUVTINF2000
+2026-05-26 21:02:50 [INFO] [adiga대학] 고려대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:02:50 [INFO] [adiga대학] 국민대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0067&menuId=PCUVTINF2000
+2026-05-26 21:02:52 [INFO] [adiga대학] 국민대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:02:52 [INFO] [adiga대학] 동국대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0109&menuId=PCUVTINF2000
+2026-05-26 21:02:54 [INFO] [adiga대학] 동국대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:02:54 [INFO] [adiga대학] 서강대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0319&menuId=PCUVTINF2000
+2026-05-26 21:02:55 [INFO] [adiga대학] 서강대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:02:55 [INFO] [adiga대학] 서울대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0320&menuId=PCUVTINF2000
+2026-05-26 21:02:57 [INFO] [adiga대학] 서울대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:02:57 [INFO] [adiga대학] 서울시립대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0325&menuId=PCUVTINF2000
+2026-05-26 21:02:59 [INFO] [adiga대학] 서울시립대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:02:59 [INFO] [adiga대학] 성균관대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0395&menuId=PCUVTINF2000
+2026-05-26 21:03:00 [INFO] [adiga대학] 성균관대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:03:00 [INFO] [adiga대학] 연세대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0518&menuId=PCUVTINF2000
+2026-05-26 21:03:02 [INFO] [adiga대학] 연세대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:03:02 [INFO] [adiga대학] 이화여자대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0623&menuId=PCUVTINF2000
+2026-05-26 21:03:04 [INFO] [adiga대학] 이화여자대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:03:04 [INFO] [adiga대학] 인하대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0654&menuId=PCUVTINF2000
+2026-05-26 21:03:05 [INFO] [adiga대학] 인하대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:03:05 [INFO] [adiga대학] 중앙대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0696&menuId=PCUVTINF2000
+2026-05-26 21:03:07 [INFO] [adiga대학] 중앙대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:03:07 [INFO] [adiga대학] 한양대학교 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0855&menuId=PCUVTINF2000
+2026-05-26 21:03:09 [INFO] [adiga대학] 한양대학교: PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:03:09 [INFO] [adiga대학] 포항공과대학교(POSTECH) 접속: https://www.adiga.kr/ucp/uvt/uni/univView.do?univCd=0780&menuId=PCUVTINF2000
+2026-05-26 21:03:10 [INFO] [adiga대학] 포항공과대학교(POSTECH): PDF링크 0개, onclick다운로드 2개 발견
+2026-05-26 21:03:10 [INFO] [전략2] 개별 대학 입학처 탐색
+2026-05-26 21:03:10 [INFO] [개별대학] 포항공과대학교 접속 (POSTECH 입학처 메인)
+2026-05-26 21:03:10 [WARNING] [개별대학] '포항공과대학교' 탐색 오류 (깊이=0): Page.goto: net::ERR_NAME_NOT_RESOLVED at https://admission.postech.ac.kr/
+Call log:
+  - navigating to "https://admission.postech.ac.kr/", waiting until "domcontentloaded"
+
+2026-05-26 21:03:10 [INFO] [개별대학] 서울시립대학교 접속 (서울시립대 입학처 공지사항)
+2026-05-26 21:03:13 [INFO] [개별대학] '서울시립대학교' 페이지 로드: 서울시립대학교 입학처
+2026-05-26 21:03:13 [INFO] [개별대학] '모집요강' 메뉴 진입: /admissionNew/html/susi/info.do?menuid=2002001001000000000
+2026-05-26 21:03:15 [INFO] [개별대학] '서울시립대학교' 페이지 로드: 모집요강 < 수시 < 서울시립대학교 입학처
+2026-05-26 21:03:15 [INFO] [다운로드] 완료 → 서울시립대학교_PDF_크게보기_7e3412c4.pdf (6,163,272 bytes)
+2026-05-26 21:03:15 [INFO] [개별대학] '공지사항' 메뉴 진입: /admissionNew/noticeBoard/list.do?list_id=OB1&menuid=2002004001000000000
+2026-05-26 21:03:17 [INFO] [개별대학] '서울시립대학교' 페이지 로드: 공지사항 | 입학정보 | 서울시립대학교 입학처
+2026-05-26 21:03:17 [INFO] [개별대학] '2026학년도 수시모집 합격자 발표 및 등록 안내' 메뉴 진입: javascript:fnView('10', '1277')
+2026-05-26 21:03:17 [WARNING] [개별대학] '서울시립대학교' 탐색 오류 (깊이=1): Page.goto: net::ERR_ABORTED at javascript:fnView('10', '1277')
+Call log:
+  - navigating to "javascript:fnView('10', '1277')", waiting until "domcontentloaded"
+
+2026-05-26 21:03:33 [INFO] [개별대학] 고려대학교 접속 (고려대 입학처 공지사항)
+2026-05-26 21:03:33 [WARNING] [개별대학] '고려대학교' 탐색 오류 (깊이=0): Page.goto: Target page, context or browser has been closed
+2026-05-26 21:03:33 [INFO] [개별대학] 성균관대학교 접속 (성균관대 입학처 메인)
+2026-05-26 21:03:33 [WARNING] [개별대학] '성균관대학교' 탐색 오류 (깊이=0): Page.goto: Target page, context or browser has been closed
+2026-05-26 21:03:33 [INFO] [개별대학] 한국과학기술원(KAIST) 접속 (KAIST 입학처 메인)
+2026-05-26 21:03:33 [WARNING] [개별대학] '한국과학기술원(KAIST)' 탐색 오류 (깊이=0): Page.goto: Target page, context or browser has been closed
+2026-05-26 21:03:33 [INFO] [수집기] 브라우저 종료
+2026-05-26 21:03:33 [INFO] 
+2026-05-26 21:03:33 [INFO] ==============================================================
+2026-05-26 21:03:33 [INFO] [결과] 수집 완료: 총 1개 PDF
+2026-05-26 21:03:33 [INFO]    1. 서울시립대학교_PDF_크게보기_7e3412c4.pdf  (6,163,272 bytes)
+2026-05-26 21:03:33 [INFO] [결과] 저장 위치: /Users/jwlee/UnivAgent/data/raw_pdf
+2026-05-26 21:03:33 [INFO] ==============================================================
+2026-05-26 21:03:33 [INFO] 
+2026-05-26 21:03:33 [INFO] [완료] 총 1개 모집요강 PDF 수집 완료!
+2026-05-26 21:03:33 [INFO]   → 서울시립대학교_PDF_크게보기_7e3412c4.pdf

@@ -266,6 +266,71 @@ class 프로필관리자:
 
 
 # ─────────────────────────────────────────────────────────────
+# 사용자 요청 관리
+# ─────────────────────────────────────────────────────────────
+
+요청_경로 = 프로젝트_루트 / "data" / "student" / "user_requests.json"
+
+
+class 요청관리자:
+    """사용자 대학 추가·기능 요청을 JSON 파일로 저장합니다."""
+
+    def __init__(self):
+        self._데이터: dict = {"requests": [], "총_요청_수": 0}
+        self._로드()
+
+    def _로드(self):
+        if 요청_경로.exists():
+            try:
+                with open(요청_경로, encoding="utf-8") as f:
+                    self._데이터 = json.load(f)
+            except Exception:
+                pass
+
+    def _저장(self):
+        self._데이터["총_요청_수"] = len(self._데이터["requests"])
+        self._데이터["최종_업데이트"] = datetime.now().isoformat(timespec="seconds")
+        요청_경로.parent.mkdir(parents=True, exist_ok=True)
+        with open(요청_경로, "w", encoding="utf-8") as f:
+            json.dump(self._데이터, f, ensure_ascii=False, indent=2)
+
+    def 요청_저장(self, user: Any, 내용: str, 유형: str = "일반") -> int:
+        """
+        요청을 저장하고 부여된 요청 번호를 반환합니다.
+
+        저장 필드:
+          request_id  — 순번 (1부터 시작)
+          timestamp   — ISO 8601 형식
+          chat_id     — Telegram chat ID
+          user_id     — Telegram user ID
+          username    — Telegram 사용자명 (없으면 빈 문자열)
+          full_name   — 표시 이름
+          유형        — "대학추가" | "기능요청" | "일반"
+          내용        — 요청 본문
+        """
+        request_id = len(self._데이터["requests"]) + 1
+        항목 = {
+            "request_id": request_id,
+            "timestamp": datetime.now().isoformat(timespec="seconds"),
+            "chat_id": user.id,
+            "user_id": user.id,
+            "username": user.username or "",
+            "full_name": user.full_name or "",
+            "유형": 유형,
+            "내용": 내용,
+            "처리_상태": "접수",
+        }
+        self._데이터["requests"].append(항목)
+        self._저장()
+        logger.info(f"[요청#{request_id}] {user.full_name}: {내용[:60]}")
+        return request_id
+
+    @property
+    def 총_요청_수(self) -> int:
+        return len(self._데이터["requests"])
+
+
+# ─────────────────────────────────────────────────────────────
 # Gemini AI 자연어 응답
 # ─────────────────────────────────────────────────────────────
 
@@ -408,9 +473,10 @@ def 대학_요약(문서: dict) -> str:
 # 전역 객체 (핸들러에서 공유)
 # ─────────────────────────────────────────────────────────────
 
-_DB   = 입시데이터()
-_프로필 = 프로필관리자()
-_AI   = AI응답기(GEMINI_API_KEY, _DB)
+_DB      = 입시데이터()
+_프로필  = 프로필관리자()
+_요청    = 요청관리자()
+_AI      = AI응답기(GEMINI_API_KEY, _DB)
 
 
 # ─────────────────────────────────────────────────────────────
@@ -665,8 +731,55 @@ async def cmd_도움말(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "  단축어: `대학목록` `내프로필` `도움말`"
     )
 
+    # /help 안내에 /request 명령어도 포함
+    가이드2 += "\n  */request 내용* — 대학 추가·기능 요청"
     await update.message.reply_text(가이드1, parse_mode=ParseMode.MARKDOWN)
     await update.message.reply_text(가이드2, parse_mode=ParseMode.MARKDOWN)
+
+
+# ─────────────────────────────────────────────────────────────
+# 사용자 요청 접수 핸들러
+# ─────────────────────────────────────────────────────────────
+
+async def cmd_request(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """/request 명령어: 대학 추가 또는 기능 요청을 접수합니다."""
+    user = update.effective_user
+    _프로필.접속_기록(user)
+
+    내용 = " ".join(context.args).strip() if context.args else ""
+    if not 내용:
+        await update.message.reply_text(
+            "📬 *요청 방법*\n\n"
+            "*/request 요청 내용* 형식으로 입력하거나\n"
+            "`[요청]`으로 시작하는 메시지를 보내주세요.\n\n"
+            "예시:\n"
+            "  `/request 부산대학교 데이터 추가 부탁드립니다`\n"
+            "  `[요청] KAIST 수시 전형 정보가 필요해요`",
+            parse_mode=ParseMode.MARKDOWN,
+        )
+        return
+
+    await _요청_접수(update, user, 내용)
+
+
+async def _요청_접수(update: Update, user: Any, 내용: str):
+    """요청 내용을 저장하고 확인 메시지를 전송합니다."""
+    # 요청 유형 자동 분류
+    대학_키워드 = ["대학", "학교", "캠퍼스", "추가", "업데이트"]
+    유형 = "대학추가" if any(kw in 내용 for kw in 대학_키워드) else "기능요청"
+
+    request_id = _요청.요청_저장(user, 내용, 유형)
+
+    확인_메시지 = (
+        f"✅ *요청이 접수되었습니다!*\n\n"
+        f"📋 접수 번호: `#{request_id}`\n"
+        f"🏷 유형: {유형}\n"
+        f"📝 내용: {내용[:100]}\n"
+        f"🕐 접수 시각: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n\n"
+        "에이전트가 곧 해당 대학 입시 데이터를 업데이트하겠습니다! 🤖\n"
+        "처리 완료 시 별도로 안내드릴게요. 감사합니다 🙏"
+    )
+    await update.message.reply_text(확인_메시지, parse_mode=ParseMode.MARKDOWN)
 
 
 # ─────────────────────────────────────────────────────────────
@@ -923,6 +1036,14 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.args = _관심_매치.group(1).split()  # type: ignore[assignment]
         await cmd_관심추가(update, context)
         return
+
+    # "[요청] ..." / "요청: ..." 패턴 → 요청 접수
+    _요청_매치 = re.match(r"^\[요청\]\s*(.+)$|^요청[:\s]+(.+)$", 질문, re.DOTALL)
+    if _요청_매치:
+        내용 = (_요청_매치.group(1) or _요청_매치.group(2) or "").strip()
+        if 내용:
+            await _요청_접수(update, user, 내용)
+            return
     # ─────────────────────────────────────────────────────────────
 
     # ── 학생 성적 데이터 입력 감지 ────────────────────────────────
@@ -984,7 +1105,7 @@ def main():
     logger.info("  대학 입시 정보 텔레그램 봇 시작")
     logger.info(f"  수록 대학: {len(_DB.대학_목록())}개  |  데이터: {_DB.갱신일시[:10]}")
     logger.info(f"  AI 응답: {'활성화 (Gemini)' if _AI.사용가능 else '비활성화'}")
-    logger.info(f"  사용자 수: {_프로필.총_사용자_수}명")
+    logger.info(f"  사용자 수: {_프로필.총_사용자_수}명  |  누적 요청: {_요청.총_요청_수}건")
     logger.info("━" * 60)
 
     app = Application.builder().token(TELEGRAM_TOKEN).build()
@@ -997,6 +1118,7 @@ def main():
     app.add_handler(CommandHandler("detail",  cmd_전형))
     app.add_handler(CommandHandler("add",     cmd_관심추가))
     app.add_handler(CommandHandler("profile", cmd_내프로필))
+    app.add_handler(CommandHandler("request", cmd_request))
 
     # 인라인 버튼 콜백
     app.add_handler(CallbackQueryHandler(callback_handler))

@@ -418,28 +418,33 @@ _AI   = AI응답기(GEMINI_API_KEY, _DB)
 # ─────────────────────────────────────────────────────────────
 
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """봇 시작 및 소개."""
+    """봇 시작 — 환영 메시지 + 입력 가이드 안내."""
     user = update.effective_user
     _프로필.접속_기록(user)
     logger.info(f"[봇] /start: {user.full_name} ({user.id})")
 
-    text = (
+    환영 = (
         f"안녕하세요, *{user.first_name}*님! 👋\n\n"
-        f"🎓 *대학 입시 정보 봇*입니다.\n"
-        f"2026학년도 수시 모집요강을 쉽게 조회할 수 있어요.\n\n"
-        f"📚 *현재 수록 대학*: {len(_DB.대학_목록())}개교\n"
-        f"📅 *데이터 기준*: {_DB.갱신일시[:10]}\n\n"
-        "━━━━━━━━━━━━━━━━━━━\n"
+        "🎓 *고등학생 입시 AI 분석봇*에 오신 걸 환영합니다!\n"
+        "2026학년도 수시 모집요강 데이터를 기반으로\n"
+        "여러분의 *맞춤 전형·대학*을 AI가 분석해 드려요.\n\n"
+        f"📚 수록 대학: *{len(_DB.대학_목록())}개교*"
+        f"  |  📅 데이터 기준: {_DB.갱신일시[:10]}\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━\n"
+        "🤖 *AI 맞춤 분석*을 받으려면\n"
+        "아래처럼 성적을 자유롭게 입력해 보세요!\n\n"
+        "`희망학과: 컴퓨터공학`\n"
+        "`내신: 1.8`\n"
+        "`모의고사: 국2 수1 영2 탐1`\n"
+        "`세특: 파이썬 데이터분석, 알고리즘 대회`\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━\n"
+        "📖 */help* — 상세 입력 가이드 (복사용 양식 포함)\n"
         "🔍 */list* — 전체 대학 목록\n"
-        "🏫 */search [대학명]* — 대학 정보 조회\n"
-        "📋 */detail [대학명]* — 수시 전형 목록\n"
-        "⭐ */add [대학명]* — 관심 대학 등록\n"
-        "👤 */profile* — 내 프로필 조회\n"
-        "❓ *자유 질문* — AI에게 무엇이든 물어보세요\n"
-        "━━━━━━━━━━━━━━━━━━━\n"
-        "예) `연세대 수능최저 알려줘`  또는  `대학목록`"
+        "🏫 */search 대학명* — 전형 상세 조회\n"
+        "👤 */profile* — 내 프로필 확인\n"
+        "━━━━━━━━━━━━━━━━━━━━━━"
     )
-    await update.message.reply_text(text, parse_mode=ParseMode.MARKDOWN)
+    await update.message.reply_text(환영, parse_mode=ParseMode.MARKDOWN)
 
 
 async def cmd_대학목록(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -579,11 +584,15 @@ async def cmd_내프로필(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton(f"🗑 제거", callback_data=f"관심제거:{대학}"),
         ])
 
+    성적 = 프로필.get("성적", {})
+    성적_행 = "\n".join(f"  • *{k}*: {v}" for k, v in 성적.items()) if 성적 else "  (미입력)"
+
     text = (
         f"👤 *{user.full_name}* 프로필\n\n"
         f"  최초 접속: {최초}\n"
         f"  최근 접속: {최근}\n"
         f"  질문 횟수: {이력수}회\n\n"
+        f"📊 *저장된 성적 데이터*\n{성적_행}\n\n"
         f"⭐ *관심 대학* ({len(관심)}개)\n"
         + ("\n".join(f"  • {d}" for d in 관심) if 관심 else "  (없음)")
     )
@@ -593,23 +602,71 @@ async def cmd_내프로필(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def cmd_도움말(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """도움말 출력."""
-    await update.message.reply_text(
-        "📖 *도움말*\n\n"
-        "*/list* — 수록된 전체 대학 목록\n"
-        "*/search [키워드]* — 대학명 키워드 검색\n"
-        "*/detail [대학명]* — 수시 전형 목록 조회\n"
-        "*/add [대학명]* — 관심 대학 등록\n"
-        "*/profile* — 내 프로필 및 관심 대학\n\n"
-        "💬 *한국어 단축어*\n"
-        "  `대학목록` `내프로필` `도움말`\n"
-        "  `검색 연세대` `전형 서울대학교`\n\n"
-        "💬 *자유 질문 예시*\n"
-        "  `서강대 논술전형 수능최저 알려줘`\n"
-        "  `고려대 학생부종합 반영비율은?`\n"
-        "  `수능최저 없는 대학 알려줘`",
-        parse_mode=ParseMode.MARKDOWN,
+    """고2 학생 맞춤 데이터 입력 가이드 출력 (2개 메시지로 분리)."""
+
+    # ── 메시지 1: 입력 항목 설명 ──────────────────────────────
+    가이드1 = (
+        "📌 *성적 입력 가이드* — 고2 학생 맞춤\n\n"
+        "아래 4가지 항목을 입력하면 AI가\n"
+        "*맞춤 대학·전형·수능최저 분석*을 해드립니다! 🎯\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━\n\n"
+
+        "1️⃣ *희망학과* (필수)\n"
+        "  진학하고 싶은 학과·전공을 적어주세요.\n"
+        "  _복수 입력 가능 (쉼표로 구분)_\n"
+        "  예) `희망학과: 컴퓨터공학, 소프트웨어학`\n\n"
+
+        "2️⃣ *내신 등급* (필수)\n"
+        "  전 과목 평균 등급을 소수점 1자리로 입력하세요.\n"
+        "  _학생부교과전형 지원 가능 여부 판단에 사용됩니다._\n"
+        "  예) `내신: 2.3`\n\n"
+
+        "3️⃣ *모의고사 성적*\n"
+        "  최근 모의고사의 과목별 등급을 입력하세요.\n"
+        "  국어/수학/영어/탐구(1과목 기준)\n"
+        "  _수능 최저학력기준 충족 여부를 확인합니다._\n"
+        "  예) `모의고사: 국2 수1 영2 탐1`\n\n"
+
+        "4️⃣ *생기부 핵심 키워드*\n"
+        "  세특·동아리·수상·봉사 활동 중 강점을 적어주세요.\n"
+        "  _학생부종합전형 적합 전형 분석에 활용됩니다._\n"
+        "  예) `세특: 파이썬 데이터분석, 수학경시 수상, 물리탐구반`"
     )
+
+    # ── 메시지 2: 복사용 양식 + 실제 예시 ───────────────────────
+    가이드2 = (
+        "━━━━━━━━━━━━━━━━━━━━━━\n"
+        "✏️ *복사해서 쓰는 입력 양식*\n"
+        "━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "```\n"
+        "희망학과: [학과명]\n"
+        "내신: [X.X]\n"
+        "모의고사: 국[등급] 수[등급] 영[등급] 탐[등급]\n"
+        "세특: [키워드1, 키워드2, ...]\n"
+        "```\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━\n"
+        "💬 *실제 입력 예시 (그대로 보내도 됩니다!)*\n"
+        "━━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "```\n"
+        "희망학과: 컴퓨터공학\n"
+        "내신: 1.8\n"
+        "모의고사: 국2 수1 영2 탐1\n"
+        "세특: 파이썬 데이터분석, 알고리즘 대회 수상, 수학 심화탐구\n"
+        "```\n\n"
+        "위 형식 중 *일부만 입력해도 분석*이 가능해요.\n"
+        "예) `내신 2.1 컴퓨터공학 지망`처럼 자유롭게 입력하셔도 됩니다. 🤖\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━━\n"
+        "🔧 *기타 명령어*\n"
+        "  */list* — 전체 대학 목록\n"
+        "  */search 대학명* — 대학 전형 조회\n"
+        "  */detail 대학명* — 전형 상세 정보\n"
+        "  */add 대학명* — 관심 대학 등록\n"
+        "  */profile* — 내 프로필 및 저장된 성적\n\n"
+        "  단축어: `대학목록` `내프로필` `도움말`"
+    )
+
+    await update.message.reply_text(가이드1, parse_mode=ParseMode.MARKDOWN)
+    await update.message.reply_text(가이드2, parse_mode=ParseMode.MARKDOWN)
 
 
 # ─────────────────────────────────────────────────────────────
@@ -717,6 +774,114 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # ─────────────────────────────────────────────────────────────
+# 학생 성적 데이터 파싱 유틸리티
+# ─────────────────────────────────────────────────────────────
+
+def _성적_파싱(텍스트: str) -> dict:
+    """
+    자유형식 텍스트에서 학생 성적 데이터를 추출합니다.
+    반환 예시:
+      {"희망학과": "컴퓨터공학", "내신": "1.8",
+       "모의고사": "국2 수1 영2 탐1", "세특": "파이썬 데이터분석"}
+    """
+    결과: dict[str, str] = {}
+
+    # 희망학과 / 희망학부 / 희망전공
+    m = re.search(r"희망(?:학과|학부|전공)[:\s]+([^\n/,]+)", 텍스트)
+    if m:
+        결과["희망학과"] = m.group(1).strip()
+
+    # 내신
+    m = re.search(r"내신[:\s]+([0-9.]+)", 텍스트)
+    if m:
+        결과["내신"] = m.group(1).strip()
+
+    # 모의고사 (국X 수X 영X 탐X 형태 또는 자유 텍스트)
+    m = re.search(r"모의(?:고사)?[:\s]+([^\n]+)", 텍스트)
+    if m:
+        결과["모의고사"] = m.group(1).strip()
+    else:
+        # "국2 수1 영2 탐1" 패턴만 있는 경우
+        m = re.search(r"국\d\s*수\d\s*영\d\s*탐\d", 텍스트)
+        if m:
+            결과["모의고사"] = m.group(0).strip()
+
+    # 세특 / 생기부
+    m = re.search(r"(?:세특|생기부)[:\s]+([^\n]+)", 텍스트)
+    if m:
+        결과["세특"] = m.group(1).strip()
+
+    return 결과
+
+
+async def _성적_입력_처리(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+    user: Any,
+    텍스트: str,
+):
+    """
+    학생이 성적 데이터를 입력했을 때:
+    1) 파싱 → 프로필에 저장
+    2) AI에게 맞춤 분석 요청
+    3) 결과를 친절하게 안내
+    """
+    파싱 = _성적_파싱(텍스트)
+    if not 파싱:
+        return  # 성적 데이터 없으면 일반 AI 흐름으로
+
+    # 프로필 저장
+    _프로필.프로필_업데이트(user.id, {"성적": 파싱})
+    logger.info(f"[성적] {user.full_name} 데이터 저장: {파싱}")
+
+    # 저장 확인 메시지
+    저장_요약 = "\n".join(f"  • *{k}*: {v}" for k, v in 파싱.items())
+    await update.message.reply_text(
+        f"✅ *성적 데이터가 저장되었습니다!*\n\n{저장_요약}\n\n"
+        "🤖 AI가 맞춤 전형을 분석 중입니다...",
+        parse_mode=ParseMode.MARKDOWN,
+    )
+
+    if not _AI.사용가능:
+        await update.message.reply_text(
+            "AI 분석 기능이 비활성화되어 있습니다.\n"
+            "*/list* 또는 */search 대학명*으로 직접 조회해 보세요.",
+            parse_mode=ParseMode.MARKDOWN,
+        )
+        return
+
+    await update.message.chat.send_action("typing")
+
+    # AI 분석 프롬프트 구성
+    희망학과 = 파싱.get("희망학과", "미입력")
+    내신 = 파싱.get("내신", "미입력")
+    모의 = 파싱.get("모의고사", "미입력")
+    세특 = 파싱.get("세특", "미입력")
+
+    분석_질문 = (
+        f"고등학교 2학년 학생의 성적 데이터입니다.\n"
+        f"희망학과: {희망학과}\n"
+        f"내신: {내신}등급\n"
+        f"모의고사: {모의}\n"
+        f"생기부/세특: {세특}\n\n"
+        f"이 학생에게 적합한 수시 전형 유형(학생부교과/학생부종합/논술 등)과 "
+        f"수능최저학력기준 충족 가능성을 포함해서 맞춤 분석해 주세요."
+    )
+    답변 = _AI.질문_답변(분석_질문, None)
+    await update.message.reply_text(답변, parse_mode=ParseMode.MARKDOWN)
+    _프로필.질문_기록(user.id, 텍스트, 답변[:200])
+
+    # 관련 대학 조회 버튼 제공
+    대학들 = _DB.대학_검색(희망학과) or _DB.대학_목록()[:4]
+    if 대학들:
+        키보드 = [[InlineKeyboardButton(d, callback_data=f"대학:{d}")] for d in 대학들[:4]]
+        await update.message.reply_text(
+            "🏫 관련 대학의 전형 정보를 바로 확인해 보세요:",
+            reply_markup=InlineKeyboardMarkup(키보드),
+        )
+
+
+# ─────────────────────────────────────────────────────────────
 # 자유 텍스트 → AI 응답
 # ─────────────────────────────────────────────────────────────
 
@@ -760,6 +925,15 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     # ─────────────────────────────────────────────────────────────
 
+    # ── 학생 성적 데이터 입력 감지 ────────────────────────────────
+    # "내신:", "희망학과:", "모의고사:", "세특:" 중 2개 이상 포함 → 성적 입력으로 판단
+    성적_키워드 = ["내신", "희망학과", "희망학부", "모의고사", "모의", "세특", "생기부"]
+    성적_히트 = sum(1 for kw in 성적_키워드 if kw in 질문)
+    if 성적_히트 >= 2:
+        await _성적_입력_처리(update, context, user, 질문)
+        return
+    # ─────────────────────────────────────────────────────────────
+
     # 대학명 자동 감지
     감지된_대학 = None
     for 대학 in _DB.대학_목록():
@@ -775,7 +949,6 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if not _AI.사용가능:
-        # AI 없으면 대학명 감지 시 버튼 제공
         if 감지된_대학:
             await _대학_전형_목록_표시(update, 감지된_대학)
         else:
@@ -786,7 +959,7 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         return
 
-    # AI 응답
+    # AI 자유 질문 응답
     await update.message.chat.send_action("typing")
     답변 = _AI.질문_답변(질문, 감지된_대학)
     await update.message.reply_text(답변, parse_mode=ParseMode.MARKDOWN)

@@ -656,8 +656,9 @@ class 직접URL_수집기:
     """
 
     # 공개 접근 가능한 직접 PDF URL
-    # HTTP 200 + application/pdf 응답 확인된 URL 목록 (매년 갱신 필요)
+    # HTTP 200 + %PDF- 바이너리 시그니처 확인된 URL 목록 (매년 갱신 필요)
     KNOWN_PDFS: list[dict] = [
+        # ── SKY ────────────────────────────────────────────────
         {
             "title": "서울대학교_2026학년도_수시모집요강",
             "url": "https://admission.snu.ac.kr/webdata/admission/files/2026susi.pdf",
@@ -677,6 +678,42 @@ class 직접URL_수집기:
             "title": "연세대학교_2028학년도_입학전형_시행계획",
             "url": "https://www2.yonsei.ac.kr/entrance/plan/2028_plan.pdf",
             "출처": "https://admission.yonsei.ac.kr/seoul/admission/html/rolling/guide.asp",
+        },
+        {
+            "title": "고려대학교_2026학년도_수시모집요강",
+            "url": "https://oku.korea.ac.kr/attach/202508/1756457523764_0.pdf",
+            "출처": "https://oku.korea.ac.kr/",
+        },
+        # ── 서성한중경이 ────────────────────────────────────────
+        {
+            "title": "서강대학교_2026학년도_수시모집요강",
+            "url": "https://admission.sogang.ac.kr/upload/GUIDES/202509011514258V5BHK.pdf",
+            "출처": "https://admission.sogang.ac.kr/enter/html/rolling/guide.asp",
+        },
+        {
+            "title": "성균관대학교_2026학년도_수시모집요강",
+            "url": "https://admission.skku.edu/upload/guide/20251015112648Z86375.pdf",
+            "출처": "https://admission.skku.edu/admission/html/rolling/guide.html",
+        },
+        {
+            "title": "한양대학교_2026학년도_수시모집요강",
+            "url": "https://go.hanyang.ac.kr/file/download.do?menu=mojib&file_no=421&type=pdf",
+            "출처": "https://go.hanyang.ac.kr/web/mojib/mojib.do?m_type=SUSI&m_year=2026",
+        },
+        {
+            "title": "중앙대학교_2026학년도_수시모집요강",
+            "url": "https://admission.cau.ac.kr/file/pdfDown.pdf?sfn=20250609045351746_5c67320918194f48aad6bd9a77ffa626.pdf&ofn=2026%ED%95%99%EB%85%84%EB%8F%84+%EC%A4%91%EC%95%99%EB%8C%80%ED%95%99%EA%B5%90+%EC%88%98%EC%8B%9C%EB%AA%A8%EC%A7%91%EC%9A%94%EA%B0%95_%EA%B3%B5%EA%B3%A0%EC%9A%A9(%EC%B5%9C%EC%A2%85).pdf",
+            "출처": "https://admission.cau.ac.kr/",
+        },
+        {
+            "title": "경희대학교_2026학년도_수시모집요강",
+            "url": "https://iphak.khu.ac.kr/file/download.do?sfn=20250714101033873_2026%ed%95%99%eb%85%84%eb%8f%84+%ea%b2%bd%ed%9d%ac%eb%8c%80%ed%95%99%ea%b5%90+%ec%88%98%ec%8b%9c+%eb%aa%a8%ec%a7%91%ec%9a%94%ea%b0%95_202507011519_fv.pdf&ofn=2026%ed%95%99%eb%85%84%eb%8f%84+%ea%b2%bd%ed%9d%ac%eb%8c%80%ed%95%99%ea%b5%90+%ec%88%98%ec%8b%9c+%eb%aa%a8%ec%a7%91%ec%9a%94%ea%b0%95_202507011519_fv.pdf",
+            "출처": "https://iphak.khu.ac.kr/",
+        },
+        {
+            "title": "이화여자대학교_2026학년도_수시모집요강",
+            "url": "https://admission.ewha.ac.kr/upload/GUIDES/202505291554567L7HWF.pdf",
+            "출처": "https://admission.ewha.ac.kr/admission/html/rolling/guide.asp",
         },
     ]
 

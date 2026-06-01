@@ -4,6 +4,9 @@
 
 ```
 UnivAgent Organization
+├── 🎛️ UNIFIED CONTROL CENTER
+│   └─ 모든 팀의 상태 모니터링 & 팀 간 협력 조율
+│
 ├── 💡 IDEA TEAM (창의성 & 비판)
 │   ├── 👨‍💼 Idea Lead (팀장)
 │   ├── 🌟 Idea Optimist (긍정적 팀원)
@@ -176,19 +179,93 @@ UnivAgent Organization
 ##✅ 성능 기준 충족
 - ✅ 테스트 커버리지 80% 이상
 - ✅ 장기적으로 유지보수 가능한 코드
+4-Tier 팀 간 협력 프로세스
 
----
+### 1단계: 팀원 의견 수렴 (Bottom-Up)
 
-## 🔄 팀 간 협력 프로세스
+```
+개발 요구사항 발생
+   ↓
+각 팀원이 자신의 관점에서 의견 제시:
 
-### Idea Team → Dev Team
+Idea Team:
+  - Optimist: "이 관점에서 접근하면 어때요?"
+  - Critic: "이 부분이 위험하지 않을까요?"
+  
+Development Team:
+  - DB Specialist: "DB 설계는 이렇게..."
+  - Impl Developer: "구현 난이도는..."
+  - Debug Specialist: "성능 영향은..."
+  
+Data Collection Team:
+  - Admission Collector: "수집 용이성은..."
+  - Trend Collector: "데이터 신뢰도는..."
+  - Validator: "검증 가능성은..."
+```
+
+### 2단계: 팀장 간 토론 (Lead Coordination)
+
+```
+Idea Lead ↔ Dev Team Lead ↔ Data Lead
+
+토론 내용:
+- 팀원들의 의견 종합
+- 우선순위 결정
+- 자원 배분 논의
+- 상충점 해결
+- 최종 의사결정
+
+결과: 팀 간 일관성 있는 계획 수립
+```
+
+### 3단계: 팀장 피드백 (Top-Down)
+
+```
+Idea Lead → 팀원들:
+  "우리는 이렇게 진행하기로 결정했습니다"
+  "이유: ..."
+  "각자의 역할: ..."
+
+Dev Team Lead → 팀원들:
+  같은 방식으로 전달
+
+Data Lead → 팀원들:
+  같은 방식으로 전달
+```
+
+### 4단계: 팀원 재조율 (Team Adjustment)
+
+```
+팀원들이 피드백을 받고:
+- 자신의 업무 조정
+- 우려사항이 있으면 팀장에게 재보고
+- 팀장이 필요시 다시 조율
+
+반복하며 최적화 진행
+```
+
+### Idea Team → Dev Team 협력 흐름
 
 ```
 Idea Lead: "이 아이디어, 구현 가능해요?"
    ↓
+(팀원 의견 수렴)
+  - Optimist: "이렇게 하면 효과 있을 것 같아요"
+  - Critic: "이 부분 기술 검증 필요해요"
+   ↓
 Dev Team Lead:
-  1. 기술적 실현 가능성 검토
-  2. 필요 리소스 추정
+  1. 기술적 실현 가능성 검토 (팀원 의견 참고)
+  2. DB Specialist: "스키마 이렇게 설계하면 돼요"
+  3. Impl Developer: "개발 난이도는 중간 정도"
+  4. Debug Specialist: "성능상 문제 없어요"
+   ↓
+(팀장 토론)
+  Idea Lead ↔ Dev Team Lead:
+  "팀원들 의견 종합하니 이렇게 진행하자"
+   ↓
+(피드백)
+  Dev Team Lead → 팀원:
+  "이렇게 진행합니다. 이유는...
   3. 일정 계획
    ↓
 Dev Team Lead: "네, 이렇게 구현하면 돼요"
@@ -348,9 +425,33 @@ Debug Specialist: 성능 분석 → 병목 지점 파악
 
 ---
 
+## 🎯 핵심 운영 원칙
+
+### 1️⃣ 팀원 의견 중심 (Bottom-Up)
+- 각 팀원의 현장 의견을 최우선으로 수렴
+- 의견이 반영되지 않으면 이유를 명확히 설명
+- 팀원들의 신뢰 기반 조직 문화
+
+### 2️⃣ 투명한 의사결정 (Transparent)
+- 팀장들 간의 모든 토론 기록 공개
+- 의사결정 이유를 팀원들에게 설명
+- 이의가 있으면 재검토 가능
+
+### 3️⃣ 유연한 조율 (Flexible)
+- 상황에 따라 우선순위 동적 조정 가능
+- 팀 간 자원 배분 재조정 가능
+- 팀원 역할 변경 가능 (팀장 재량)
+
+### 4️⃣ 통합 모니터링 (Integrated)
+- 모든 팀의 상태를 Control Center에서 확인
+- 팀 간 협력 현황 실시간 파악
+- 위험/지연 요소 조기 감지
+
+---
+
 **Last Updated**: 2026-06-01  
-**Version**: 1.1  
-**Status**: Active - 자료수집팀 추가
+**Version**: 1.2  
+**Status**: Active - 관제센터 추가, 팀 간 협력 강화
    - 최종 권장사항 제시
 ```
 

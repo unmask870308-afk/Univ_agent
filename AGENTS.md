@@ -9,11 +9,17 @@ UnivAgent Organization
 │   ├── 🌟 Idea Optimist (긍정적 팀원)
 │   └── 🔍 Idea Critic (비판적 팀원)
 │
-└── 💻 DEVELOPMENT TEAM (실행 & 최적화)
-    ├── 👨‍💼 Dev Team Lead (팀장)
-    ├── 🗄️ DB Specialist (DB 관리자)
-    ├── 💻 Implementation Developer (구현 개발자)
-    └── 🔍 Debug Specialist (디버거)
+├── 💻 DEVELOPMENT TEAM (실행 & 최적화)
+│   ├── 👨‍💼 Dev Team Lead (팀장)
+│   ├── 🗄️ DB Specialist (DB 관리자)
+│   ├── 💻 Implementation Developer (구현 개발자)
+│   └── 🔍 Debug Specialist (디버거)
+│
+└── 📊 DATA COLLECTION TEAM (효율 & 품질)
+    ├── 👨‍💼 Data Lead (팀장 - 코스트 관리)
+    ├── 🎓 Admission Guide Collector (입시전형 수집)
+    ├── 📈 Trend & SEQ Collector (트렌드 & 세특 수집)
+    └── ✅ Data Validator (데이터 검증)
 ```
 
 ---
@@ -91,7 +97,83 @@ UnivAgent Organization
 
 #### 성공 기준
 - ✅ 요구사항 100% 구현
-- ✅ 성능 기준 충족
+- # DATA COLLECTION TEAM: 효율성과 데이터 품질의 균형
+
+#### 팀 구성
+- **Data Lead**: 팀장 - 코스트 관리, 자원 배분 최적화
+- **Admission Guide Collector**: 대학 입학전형 정보 수집, 체계적 정리
+- **Trend & SEQ Collector**: 입시 트렌드, 세특 데이터 수집
+- **Data Validator**: 데이터 정확성 검증, 환각 데이터 배제
+
+#### 작동 방식
+
+```
+1️⃣ 우선순위 결정
+   Data Lead: 
+   - ROI 분석 (비용 vs 효과)
+   - 자원 배분 최적화
+   - 수집 일정 결정
+
+2️⃣ 데이터 수집
+   Admission Guide Collector: 입시 정보 수집
+   Trend & SEQ Collector: 트렌드 & 세특 데이터 수집
+   
+3️⃣ 데이터 검증
+   Data Validator:
+   - 정확성 검증
+   - 환각 데이터 배제
+   - 신뢰도 등급 부여
+
+4️⃣ 효율성 평가
+   Data Lead:
+   - 수집 효율 분석
+   - 비용 추적
+   - 다음 분기 계획 수립
+```
+
+### Data Collection Team 내부 협력
+
+```
+1. 데이터 요청 발생
+   Dev Team: "의학대 입시 트렌드 데이터 필요"
+   ↓
+
+2. Data Lead 의사결정
+   - ROI 분석
+   - 우선순위 결정
+   - 자원 배분
+   ↓
+
+3. 데이터 수집
+   Collectors: 병렬로 수집
+   - Admission Guide: 입시 정보
+   - Trend & SEQ: 트렌드 & 세특
+   ↓
+
+4. 데이터 검증
+   Validator: 정확성 검증
+   ├─ 환각 데이터 배제
+   ├─ 신뢰도 등급 부여
+   └─ 피드백 제공
+   ↓
+
+5. 최종 데이터 전달
+   Dev Team에 고품질 데이터 제공
+   ↓
+
+6. 효율성 분석
+   Data Lead: 효율성 평가 & 개선 계획
+```
+
+#### 성공 기준
+- ✅ 비용 최소화하면서 최고 품질 데이터 확보
+- ✅ 수집 효율 지속적 개선 (월 5% 이상)
+- ✅ 데이터 정확성 98% 이상
+- ✅ 환각/거짓 데이터 99% 이상 배제
+
+---
+
+##✅ 성능 기준 충족
 - ✅ 테스트 커버리지 80% 이상
 - ✅ 장기적으로 유지보수 가능한 코드
 
@@ -135,6 +217,13 @@ Debug Specialist: 성능 분석 → 병목 지점 파악
 
 ## 📊 의사결정 프로세스
 
+
+### Data Collection Team 성과 지표
+- 수집 효율 (월간 향상도)
+- 데이터 정확성 (검증 통과율)
+- 비용 대비 효과 (ROI)
+- 환각 데이터 탐지율 (99% 목표)
+- 사용자 만족도
 ### Idea Team의 최종 판단
 
 ```
@@ -188,6 +277,10 @@ Debug Specialist: 성능 분석 → 병목 지점 파악
    - 함께 성장하기
 
 ### 금지사항 (Anti-patterns)
+| **Data Lead** | data-lead.md | 자료수집팀 팀장 |
+| **Admission Guide Collector** | admission-guide-collector.md | 입시전형 수집 |
+| **Trend & SEQ Collector** | trend-seq-collector.md | 트렌드 & 세특 수집 |
+| **Data Validator** | data-validator.md | 데이터 검증 |
 
 ❌ 일방적 결정  
 ❌ 팀원 무시하기  
@@ -205,26 +298,59 @@ Debug Specialist: 성능 분석 → 병목 지점 파악
 - 팀 토론 횟수 및 질
 - Optimist-Critic 간 수렴도
 
-### Dev Team 성과 지표
-- 구현 완료율
-- 성능 지표 (응답 시간, 에러율)
-- 테스트 커버리지
-- 기술 부채 감소량
-- 팀 만족도
+### 기능 구현**: Impl Developer
+- **데이터 정확성**: Data Lead
+- **자료 수집**: Admission Guide Collector, Trend & SEQ Collector
+- **데이터 검증**: Data Validator
 
----
+### 에스컬레이션 경로
 
-## 🚀 사용 방법
-
+```
+개별 문제 발생
+  ↓
+해당 담당자 상담
+  ↓
+팀장에게 보고 (Dev Team Lead / Idea Lead / Dat
 ### Idea Team 호출
 
 ```
 "아이디어팀에서 이 문제에 대한 제안을 해줄 수 있어?"
 
 → Idea Lead가 조율하여:
-   - Optimist에게 아이디어 요청
-   - Critic에게 검토 요청
-   - 토론 진행
+## 🎯 세 팀의 역할 정리
+
+### 📚 정보 흐름도
+
+```
+🎓 Data Collection Team
+└─ 입시 정보 수집
+   ├─ Admission Guide: 입시 전형 정보
+   ├─ Trend & SEQ: 트렌드 및 합격선 정보
+   └─ Validator: 정확성 검증
+        ↓
+        ↓ (고품질 데이터)
+        ↓
+💡 Idea Team
+└─ 아이디어 발굴
+   ├─ Optimist: 창의적 제안
+   ├─ Critic: 논리적 검토
+   └─ Lead: 최종 판단
+        ↓
+        ↓ (구현 가능한 아이디어)
+        ↓
+💻 Development Team
+└─ 기능 구현 및 배포
+   ├─ DB Specialist: 스키마 설계
+   ├─ Impl Developer: 코드 작성
+   ├─ Debug Specialist: 성능 최적화
+   └─ Lead: 아키텍처 관리
+```
+
+---
+
+**Last Updated**: 2026-06-01  
+**Version**: 1.1  
+**Status**: Active - 자료수집팀 추가
    - 최종 권장사항 제시
 ```
 
